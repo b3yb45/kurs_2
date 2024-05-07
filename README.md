@@ -1,1 +1,2 @@
-Нужные модули python: requests, json-excel-converter, XlsxWriter
+Необходимые модули для работы класса Budget:
+requests, json, pandas, datetime, dateutil (relativedelta)
