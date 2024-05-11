@@ -139,15 +139,14 @@ class Budget:
     def get_data(self):
         self.update_query_params()
         for period in self.__periods:
-            print("Start")
             self.__query_params["filterperiod"] = period
-            print(self.__query_params["filteroktmo.oktmoname"])
+            print(self.__query_params["filterperiod"], "Start")
             resp = requests.get(Budget.__endpoint, params=self.__query_params)
             if resp.status_code == 200:
                 self.__data.append(resp.json())
             else:
                 print(resp.status_code)
-            print("Done")
+            print(self.__query_params["filterperiod"], "Done")
 
     def save_json(self, file:str):
         with open(f'{file}.json', 'w', encoding='utf-8') as f:
@@ -177,13 +176,25 @@ class Budget:
     @property
     def budget(self) -> pd.DataFrame:
         if self.__budget is None:
-            self.__budget = self.__df[['period','blockOktmo.oktmoname', 'blockOktmo.regioncode', 'blockKd.code', 'blockKd.name', 'blockStrcode.code', 'blockStrcode.name', 'perkb']]
+            self.__budget = self.__df[['period','blockOktmo.oktmoname',
+                                        'blockOktmo.regioncode',
+                                        'blockKd.code',
+                                        'blockKd.name',
+                                        'blockStrcode.code',
+                                        'blockStrcode.name',
+                                        'perkb']]
         return self.__budget
     
     def filt_budget(self) -> pd.DataFrame:
         if self.__budget is None:
-            self.__budget = self.__df[['period','blockOktmo.oktmoname', 'blockOktmo.regioncode', 'blockKd.code', 'blockKd.name', 'blockStrcode.code', 'blockStrcode.name', 'perkb']]
-        filt = ((self.__df['blockKd.name'] == 'Доходы бюджета - всего, в том числе:') | (self.__df['blockStrcode.name'] == 'Доходы бюджета - всего, в том числе:'))
+            self.__budget = self.__df[['period','blockOktmo.oktmoname',
+                                        'blockOktmo.regioncode', 'blockKd.code',
+                                        'blockKd.name', 'blockStrcode.code',
+                                        'blockStrcode.name', 'perkb']]
+        filt = ((self.__df['blockKd.name'] == 
+                'Доходы бюджета - всего, в том числе:') | 
+                (self.__df['blockStrcode.name'] == 
+                'Доходы бюджета - всего, в том числе:'))
         self.__budget.drop(index=self.__df[filt].index, inplace=True)
         
     def save_budget(self, file:str):
