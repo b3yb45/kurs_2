@@ -14,7 +14,7 @@ class Budget:
 
     def __init__(self):
         self.__periodicity = None
-        self.__periods = set()
+        self.__periods = []
         self.__reg_codes = []
         self.__kd_codes = []
         self.__oktmonames = []
@@ -62,7 +62,7 @@ class Budget:
         self.__periodicity = value
 
     @property
-    def periods(self) -> set:
+    def periods(self) -> list:
         return self.__periods
     
     def set_periods(self, start_date:str, end_date:str):
@@ -93,13 +93,13 @@ class Budget:
             raise Exception('Periodicity', self.__periodicity, 'is not supported')
         
         date = start_date
-        periods_temp = set()
+        periods_temp = []
         while str(end_date.strftime('%d%m%Y')) not in periods_temp:
-            periods_temp.add(str(date.strftime('%d%m%Y')))
+            periods_temp.append(str(date.strftime('%d%m%Y')))
             date += relativedelta(months=m, years=y)
 
         self.__periods.clear()
-        self.__periods = sorted(periods_temp)
+        self.__periods = periods_temp
 
     @property
     def reg_codes(self) -> set:
@@ -148,7 +148,7 @@ class Budget:
             if "filteroktmo.regioncode" in self.__query_params:
                 self.__query_params.pop("filteroktmo.regioncode")
 
-        if self.__periods == set():
+        if self.__periods == []:
             print('No periods specified')
 
         if self.__kd_codes == []:
@@ -220,6 +220,10 @@ class Budget:
             self.create_df()
         return self.__df
 
+    @df.setter
+    def df(self, value:pd.DataFrame):
+        self.__df = value
+
     def create_df(self) -> pd.DataFrame:
         if self.__data == []:
             self.get_data()
@@ -233,7 +237,7 @@ class Budget:
     def save_excel(self, file:str):
         if self.__df is None:
             self.create_df()
-        self.__df.to_excel(f"{file}.xlsx", index=False)
+        self.__df.to_excel(f"{file}.xlsx")
 
     @property
     def budget(self, columns:list=None) -> pd.DataFrame:

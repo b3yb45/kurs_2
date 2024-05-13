@@ -1,0 +1,6 @@
+filterperiod: 01.01.2021, 01.01.2024
+filterperiodicity: Y
+filteroktmo.oktmoname: Республика Алтай, Республика Тыва, Республика Хакасия
+filterblocks.info: PERKB
+FORMCODEOKUD: 053317
+filterkd.code: 00000000000000000, 10000000000000000, 20000000000000000, 20210000000000150, 20220000000000150, 20230000000000150
