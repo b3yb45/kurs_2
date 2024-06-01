@@ -3,7 +3,6 @@ import json
 import pandas as pd
 import datetime
 from dateutil.relativedelta import relativedelta
-import time
 
 class Budget:
 
@@ -74,7 +73,7 @@ class Budget:
         
         if start_date > end_date:
             print(start_date, end_date)
-            raise Exception('Start date should be less than end date')
+            raise Exception('Start date should be less or equal to end date')
         
         if start_date.year not in range(2018, 2025) or end_date.year not in range(2018, 2025):
             raise Exception('Year should be in range 2018-2024')
@@ -170,13 +169,12 @@ class Budget:
             print('No periodicity specified')
         else:
             self.__query_params["filterperiodicity"] = self.__periodicity
-
-        #print(self.__query_params)
     
     def read_file_prms(self, file:str):
         params = {}
         with open(f'{file}.txt', 'r', encoding='utf-8') as f:
             for line in f:
+                #print(line.strip().split(':'))
                 name, value = line.strip().split(':')
                 if name == 'filterperiod':
                     periods = list(i.strip() for i in value.strip().split(','))
@@ -243,15 +241,13 @@ class Budget:
     def budget(self, columns:list=None) -> pd.DataFrame:
         if columns is None:
             columns = self.__columns
-        if self.__budget is None:
-            self.__budget = self.__df[columns]
+        self.__budget = self.__df[columns]
         return self.__budget
     
     def filt_budget(self, columns:list=None, filt=None) -> pd.DataFrame:
         if columns is None:
             columns = self.__columns
-        if self.__budget is None:
-            self.__budget = self.__df[columns]
+        self.__budget = self.__df[columns]
         if filt is None:
             self.__filt = ((self.__df['blockKd.name'] == 
                             'Доходы бюджета - всего, в том числе:') | 
